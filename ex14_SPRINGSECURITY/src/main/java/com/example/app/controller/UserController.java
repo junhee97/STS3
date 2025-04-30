@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,19 +44,37 @@ public class UserController {
 		log.info("GET /login");
 	}
 
+//	@GetMapping("/user")
+//	public void user(Authentication authentication) {
+//		log.info("GET /user" + authentication);
+//		log.info("name : " + authentication.getName());
+//		log.info("principal : " + authentication.getPrincipal());
+//		log.info("authorities : " + authentication.getAuthorities());
+//		log.info("details : " + authentication.getDetails());
+//		log.info("credential : " + authentication.getCredentials());
+//	}
+
+//	@GetMapping("/user")
+//	public void user(@AuthenticationPrincipal Principal principal) {
+//		log.info("GET /user " + principal);
+//	}
+
 	@GetMapping("/user")
-	public void user() {
-		log.info("GET /user");
+	public void user(Model model) {
+		log.info("GET /user ");
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		log.info("authentication : " + authentication);
+		model.addAttribute("auth", authentication);
 	}
 
 	@GetMapping("/manager")
 	public void manager() {
-		log.info("GET /manager");
+		log.info("GET /manager ");
 	}
 
 	@GetMapping("/admin")
 	public void admin() {
-		log.info("GET /admin");
+		log.info("GET /admin ");
 	}
 
 	@GetMapping("/join")
