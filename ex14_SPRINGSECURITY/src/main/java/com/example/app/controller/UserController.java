@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.app.domain.dto.UserDto;
+import com.example.app.domain.service.UserServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,11 +27,34 @@ import lombok.extern.slf4j.Slf4j;
 
 public class UserController {
 
+	@Autowired
+	private UserServiceImpl userService;
+
 	@InitBinder
 	public void dataBinder(WebDataBinder webDataBinder) {
 		log.info("WebDataBinder's invoke.. " + webDataBinder);
 		webDataBinder.registerCustomEditor(LocalDate.class, "birthday", new BirthdayEditor());
 		webDataBinder.registerCustomEditor(String.class, "phone", new PhoneEditor());
+	}
+
+	@GetMapping("/login")
+	public void login() {
+		log.info("GET /login");
+	}
+
+	@GetMapping("/user")
+	public void user() {
+		log.info("GET /user");
+	}
+
+	@GetMapping("/manager")
+	public void manager() {
+		log.info("GET /manager");
+	}
+
+	@GetMapping("/admin")
+	public void admin() {
+		log.info("GET /admin");
 	}
 
 	@GetMapping("/join")
@@ -37,15 +63,23 @@ public class UserController {
 	}
 
 	@PostMapping("/join")
-	public void join_post(@Valid UserDto dto, BindingResult bindingResult, Model model) {
+	public String join_post(@Valid UserDto dto, BindingResult bindingResult, Model model,
+			RedirectAttributes redirectAttributes) {
 		log.info("POST /join.." + dto);
 
 		if (bindingResult.hasErrors()) {
 			for (FieldError error : bindingResult.getFieldErrors()) {
 				log.info("Error Field : " + error.getField() + "Error Msg : " + error.getDefaultMessage());
 				model.addAttribute(error.getField(), error.getDefaultMessage());
+				return "join";
 			}
 		}
+		boolean isJoin = userService.userJoin(dto);
+		if (isJoin) {
+			redirectAttributes.addFlashAttribute("message", "회원가입 완료!");
+			return "redirect:/login";
+		} else
+			return "join";
 	}
 
 	//
@@ -69,6 +103,6 @@ public class UserController {
 			phone = phone.replaceAll("-", "");
 			setValue(phone);
 		}
-		
+
 	}
 }

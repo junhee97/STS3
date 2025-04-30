@@ -15,22 +15,28 @@ import com.example.app.domain.dto.UserDto;
 
 public interface UserMapper {
 
-	@Insert(value = "insert into tbl_user2 values(#{userid}, #{password}, #{rePassword}, #{username}, #{phone}, #{zipcode}, #{addr1}, #{addr2}, #{birthday})")
+	@Insert(value = "insert into tbl_user values(#{username}, #{password}, #{role})")
 	public int insert(UserDto userDto);
 
-	@Update("update tbl_user2 set addr1=#{addr1} where userid=#{userid}")
-	public int update(UserDto userDto);
+	@Select("select * from tbl_user where username = #{username}")
+	public UserDto selectAt(String username);
 
-	@Delete("delete from tbl_user2 where userid=#{userid}")
-	public int delete(String userid);
-
-	@Select("select * from tbl_user2 where userid=#{userid}")
-	public UserDto selectAt(String userid);
-
-	@Select("select * from tbl_user2")
-	public List<UserDto> selectAll();
-	
-	// XML
-	public List<Map<String, Object>> selectAllResultMapXml();
+//	@Insert(value = "insert into tbl_user2 values(#{userid}, #{password}, #{rePassword}, #{username}, #{phone}, #{zipcode}, #{addr1}, #{addr2}, #{birthday})")
+//	public int insert(UserDto userDto);
+//
+//	@Update("update tbl_user2 set addr1=#{addr1} where userid=#{userid}")
+//	public int update(UserDto userDto);
+//
+//	@Delete("delete from tbl_user2 where userid=#{userid}")
+//	public int delete(String userid);
+//
+//	@Select("select * from tbl_user2 where userid=#{userid}")
+//	public UserDto selectAt(String userid);
+//
+//	@Select("select * from tbl_user2")
+//	public List<UserDto> selectAll();
+//	
+//	// XML
+//	public List<Map<String, Object>> selectAllResultMapXml();
 
 }
